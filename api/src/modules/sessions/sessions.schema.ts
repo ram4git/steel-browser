@@ -147,6 +147,7 @@ const SessionStreamQuery = z.object({
     .describe("Make the browser iframe interactive"),
   pageId: z.string().optional().describe("Page ID to connect to"),
   pageIndex: z.string().optional().describe("Page index (or tab index) to connect to"),
+  wsUrl: z.string().optional().describe("Override WebSocket URL for external proxy support"),
 });
 
 const SessionLiveDetailsResponse = z.object({

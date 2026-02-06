@@ -144,16 +144,30 @@ export const handleGetSessionStream = async (
   request: SessionStreamRequest,
   reply: FastifyReply,
 ) => {
-  const { showControls, theme, interactive, pageId, pageIndex } = request.query;
+  const { showControls, theme, interactive, pageId, pageIndex, wsUrl: wsUrlOverride } = request.query;
 
   const singlePageMode = !!(pageId || pageIndex);
 
-  // Construct WebSocket URL with page parameters if present
-  let wsUrl = getUrl("v1/sessions/cast", "ws");
-  if (pageId) {
-    wsUrl += `?pageId=${encodeURIComponent(pageId)}`;
-  } else if (pageIndex) {
-    wsUrl += `?pageIndex=${encodeURIComponent(pageIndex)}`;
+  // Use wsUrl override if provided (for external proxy support), otherwise construct default
+  let wsUrl: string;
+  if (wsUrlOverride) {
+    // Use the provided WebSocket URL (from proxy)
+    wsUrl = wsUrlOverride;
+    // Append page parameters if present
+    const separator = wsUrlOverride.includes('?') ? '&' : '?';
+    if (pageId) {
+      wsUrl += `${separator}pageId=${encodeURIComponent(pageId)}`;
+    } else if (pageIndex) {
+      wsUrl += `${separator}pageIndex=${encodeURIComponent(pageIndex)}`;
+    }
+  } else {
+    // Construct WebSocket URL with page parameters if present
+    wsUrl = getUrl("v1/sessions/cast", "ws");
+    if (pageId) {
+      wsUrl += `?pageId=${encodeURIComponent(pageId)}`;
+    } else if (pageIndex) {
+      wsUrl += `?pageIndex=${encodeURIComponent(pageIndex)}`;
+    }
   }
 
   return reply.view("live-session-streamer.ejs", {

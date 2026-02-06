@@ -582,6 +582,9 @@
 
               // Create a new WebSocket for this tab
               const ws = new WebSocket(createWebSocketUrl(pageId));
+              // Set binaryType to "text" so event.data is a string, not a Blob
+              // This is required because JSON.parse() cannot parse Blob objects
+              ws.binaryType = "text";
               console.log(`Connecting websocket for tab ${pageId}`);
 
               if (tabs[pageId]) {
