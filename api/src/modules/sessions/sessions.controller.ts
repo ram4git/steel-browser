@@ -4,6 +4,7 @@ import { getErrors } from "../../utils/errors.js";
 import { CreateSessionRequest, SessionDetails, SessionStreamRequest } from "./sessions.schema.js";
 import { CookieData } from "../../services/context/types.js";
 import { getUrl, getBaseUrl } from "../../utils/url.js";
+import { env } from "../../env.js";
 
 export const handleLaunchBrowserSession = async (
   server: FastifyInstance,
@@ -35,7 +36,7 @@ export const handleLaunchBrowserSession = async (
 
     return await server.sessionService.startSession({
       sessionId,
-      proxyUrl,
+      proxyUrl: proxyUrl || env.PROXY_URL,
       userDataDir,
       persist,
       userAgent,
@@ -144,7 +145,14 @@ export const handleGetSessionStream = async (
   request: SessionStreamRequest,
   reply: FastifyReply,
 ) => {
-  const { showControls, theme, interactive, pageId, pageIndex, wsUrl: wsUrlOverride } = request.query;
+  const {
+    showControls,
+    theme,
+    interactive,
+    pageId,
+    pageIndex,
+    wsUrl: wsUrlOverride,
+  } = request.query;
 
   const singlePageMode = !!(pageId || pageIndex);
 
@@ -154,7 +162,7 @@ export const handleGetSessionStream = async (
     // Use the provided WebSocket URL (from proxy)
     wsUrl = wsUrlOverride;
     // Append page parameters if present
-    const separator = wsUrlOverride.includes('?') ? '&' : '?';
+    const separator = wsUrlOverride.includes("?") ? "&" : "?";
     if (pageId) {
       wsUrl += `${separator}pageId=${encodeURIComponent(pageId)}`;
     } else if (pageIndex) {

@@ -698,7 +698,7 @@ export class CDPService extends EventEmitter {
 
         let extensionPaths: string[] = [];
         try {
-          const defaultExtensions = ["recorder"];
+          const defaultExtensions = ["recorder", "domain-guard"];
           const customExtensions = this.launchConfig.extensions
             ? [...this.launchConfig.extensions]
             : [];

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"git add api/.gitignore api/extensions/domain-guard/ api/src/modules/sessions/sessions.controller.ts api/src/services/cdp/cdp.service.ts && git commit -m \\\"$(cat <<'EOF'\\nfeat: Add Squid pr...",
+  "error": "Exit code 1\nhusky - DEPRECATED\n\nPlease remove the following two lines from .husky/pre-commit:\n\n#!/usr/bin/env sh\n. \"$(dirname -- \"$0\")/_/husky.sh\"\n\nThey WILL FAIL in v10.0.0\n\n🎨 Running code formatting...\n\n> @steel-browser/api@0.4.3 pretty\n> prettier --write \"src/**/*.ts\"\n\nsrc/config.ts 146ms\nsrc/env.ts 19ms\nsrc/index.ts 5ms\nsrc/modules/actions/actions.controller.ts 27ms\nsrc/modules/actions/actions.routes.ts 4ms\nsrc/modules/actions/actions.schema.ts 8ms\nsrc/modules/cdp/cdp.routes.ts 2ms\nsrc/modu...",
+  "timestamp": "2026-03-17T18:00:19.836Z",
+  "retry_count": 1
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Agent Studio Domain Guard",
+  "version": "1.0",
+  "description": "Shows a branded error page when domains are blocked by the egress proxy",
+  "permissions": ["webNavigation"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

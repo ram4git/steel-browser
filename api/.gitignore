@@ -26,6 +26,7 @@ dist
 .aider*
 extensions/*
 !extensions/recorder
+!extensions/domain-guard
 files/*
 static/*
 # Ignore future changes to this file
