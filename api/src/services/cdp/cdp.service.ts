@@ -607,7 +607,10 @@ export class CDPService extends EventEmitter {
         }
 
         this.launchConfig = config || this.defaultLaunchConfig;
-        this.logger.info("[CDPService] Launching new browser instance.");
+        const effectiveProxy = this.launchConfig.options.proxyUrl || env.PROXY_URL || null;
+        this.logger.info(
+          `[CDPService] Launching new browser instance. Proxy: ${effectiveProxy || "none"}`,
+        );
 
         // Validate configuration
         try {
@@ -800,6 +803,8 @@ export class CDPService extends EventEmitter {
           userAgent ? `--user-agent=${userAgent}` : "",
           this.launchConfig.options.proxyUrl
             ? `--proxy-server=${this.launchConfig.options.proxyUrl}`
+            : env.PROXY_URL
+            ? `--proxy-server=${env.PROXY_URL}`
             : "",
         ];
 
