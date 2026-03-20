@@ -777,6 +777,8 @@ export class CDPService extends EventEmitter {
           "--disable-infobars",
           "--disable-breakpad",
           "--disable-background-networking",
+          "--safebrowsing-disable-auto-update",
+          "--proxy-bypass-list=<-loopback>",
         ];
 
         const headfulArgs = [
