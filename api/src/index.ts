@@ -15,6 +15,7 @@ export const server = fastify({
   trustProxy: true,
   bodyLimit: 100 * MB,
   disableRequestLogging: true,
+  pluginTimeout: 60_000,
 });
 
 const setupServer = async () => {
