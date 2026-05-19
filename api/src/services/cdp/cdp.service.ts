@@ -1204,6 +1204,29 @@ export class CDPService extends EventEmitter {
     this.sessionContext = await this.getBrowserState();
 
     await this.shutdown();
+
+    // Wipe Chrome profile storage so the next session starts with a clean slate.
+    // shutdown() kills the Chrome process but the userDataDir persists on disk.
+    // Without this, cookies, localStorage, and IndexedDB from the previous session
+    // are read back by Chrome on the next launch.
+    const userDataDir = this.launchConfig?.userDataDir;
+    if (userDataDir) {
+      const defaultProfile = path.join(userDataDir, "Default");
+      const toRemove = [
+        path.join(defaultProfile, "Local Storage"),
+        path.join(defaultProfile, "Session Storage"),
+        path.join(defaultProfile, "IndexedDB"),
+        path.join(defaultProfile, "Cache"),
+        path.join(defaultProfile, "Code Cache"),
+        path.join(defaultProfile, "Cookies"),
+        path.join(defaultProfile, "Cookies-journal"),
+      ];
+      await Promise.allSettled(
+        toRemove.map((p) => fs.promises.rm(p, { recursive: true, force: true })),
+      );
+      this.logger.info("[CDPService] Wiped Chrome profile storage for clean session start");
+    }
+
     await this.pluginManager.onSessionEnd(sessionConfig);
     this.currentSessionConfig = null;
     this.sessionContext = null;
