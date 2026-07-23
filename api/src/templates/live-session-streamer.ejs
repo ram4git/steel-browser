@@ -970,6 +970,22 @@
               canvas.removeEventListener('mouseup', canvas._mouseUpHandler);
               canvas.removeEventListener('mousemove', canvas._mouseMoveHandler);
               canvas.removeEventListener('wheel', canvas._wheelHandler);
+              canvas.removeEventListener('contextmenu', canvas._contextMenuHandler);
+              canvas.removeEventListener('dragstart', canvas._dragStartHandler);
+              canvas.removeEventListener('auxclick', canvas._auxClickHandler);
+
+              // Suppress local browser defaults (context menu, drag-ghost,
+              // middle-click autoscroll) so the underlying mouse events reach
+              // the remote session unobstructed instead of being intercepted
+              // by this (host) browser's own UI.
+              canvas._contextMenuHandler = (e) => e.preventDefault();
+              canvas.addEventListener('contextmenu', canvas._contextMenuHandler);
+
+              canvas._dragStartHandler = (e) => e.preventDefault();
+              canvas.addEventListener('dragstart', canvas._dragStartHandler);
+
+              canvas._auxClickHandler = (e) => e.preventDefault();
+              canvas.addEventListener('auxclick', canvas._auxClickHandler);
 
               // Helper function for scaled coordinates
               function getScaledCoordinates(e, canvas, pageId) {
@@ -1000,6 +1016,10 @@
 
               // MouseDown event
               canvas._mouseDownHandler = (e) => {
+                  // Prevent local browser defaults (e.g. Chrome's middle-click
+                  // autoscroll mode) from engaging before the press is forwarded.
+                  e.preventDefault();
+
                   if (ws.readyState !== WebSocket.OPEN) return;
 
                   const coords = getScaledCoordinates(e, canvas, pageId);
