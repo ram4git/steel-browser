@@ -1,0 +1,16 @@
+{
+  "name": "Steel Browser",
+  "user": "ubuntu",
+  "install": "npm install && npm run prepare:recorder -w api",
+  "terminals": [
+    {
+      "name": "api",
+      "command": "npm run dev -w api"
+    },
+    {
+      "name": "ui",
+      "command": "npm run dev -w ui"
+    }
+  ],
+  "ports": [3000, 5173, 9222]
+}
