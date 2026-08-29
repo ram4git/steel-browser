@@ -11,6 +11,8 @@
 <p align="center">
     <b>The open-source browser API for AI agents & apps.</b> <br />
     The best way to build live web agents and browser automation tools.
+    <br /><br />
+    <em>Fork of <a href="https://github.com/steel-dev/steel-browser">steel-dev/steel-browser</a>, created in November 2025. See <a href="#about-this-fork">how this fork differs</a>.</em>
 </p>
 
 <div align="center">
@@ -41,6 +43,26 @@
 <p align="center">
   <img src="images/demo.gif" alt="Steel Demo" width="600">
 </p>
+
+## About this fork
+
+This repository is a fork of [`steel-dev/steel-browser`](https://github.com/steel-dev/steel-browser), created in **November 2025**. The first fork-specific commit is dated **November 3, 2025**, and it is based on upstream `main` as of October 19, 2025 (`e9165bb`).
+
+It is maintained for Agent Studio / self-hosted deployments that sit behind an egress proxy. It is not Steel Cloud, and it is not kept in lockstep with upstream.
+
+### How this fork differs from upstream
+
+| Area | This fork | Original `steel-dev/steel-browser` |
+| --- | --- | --- |
+| Egress proxy | Always honors `PROXY_URL` when a session does not set its own `proxyUrl`, so Chrome traffic can be forced through a Squid (or similar) egress proxy | Proxy is per-session only (`proxyUrl` on session create) |
+| Blocked domains | Ships the **Agent Studio Domain Guard** Chrome extension (`api/extensions/domain-guard`). Proxy CONNECT failures show a branded "Domain Blocked" page instead of Chrome's default error | No domain-guard extension |
+| Session isolation | Wipes Chrome profile storage (cookies, localStorage, IndexedDB, caches) after each session so state does not leak into the next launch | Profile data in `userDataDir` can persist across sessions |
+| Live stream / CDP | `wsUrl` query override for the session stream, WebSocket `binaryType: "text"`, nginx `Host: localhost` on the CDP proxy, and explicit viewport sizing to avoid 800×600 flicker | Default stream URL and Host header; no `wsUrl` override |
+| Chrome launch | Prefers `/usr/bin/google-chrome`, adds `--proxy-bypass-list` for loopback/`frontend`/`localhost`, and `--safebrowsing-disable-auto-update` | Uses Chromium by default on Linux |
+| Docker image | API `Dockerfile` is amd64-only and installs Google Chrome + matching ChromeDriver. The combined root `Dockerfile` was removed | Multi-arch images; combined API+UI image |
+| Server startup | Fastify `pluginTimeout` raised to 60s so slower plugin/browser startup does not fail the process | Default Fastify plugin timeout |
+
+Upstream docs, SDKs, and Steel Cloud links below still apply to the original project. Use this repo's source and images when you are running this fork.
 
 ## ✨ Highlights 
 
