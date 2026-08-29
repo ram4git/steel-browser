@@ -5,12 +5,27 @@
   "terminals": [
     {
       "name": "api",
-      "command": "npm run dev -w api"
+      "command": "npm run dev -w api",
+      "description": "Steel Browser API (Fastify + Chrome via CDP) on http://localhost:3000. Swagger/Scalar docs at /documentation."
     },
     {
       "name": "ui",
-      "command": "npm run dev -w ui"
+      "command": "npm run dev -w ui",
+      "description": "Steel Browser UI (Vite dev server) on http://localhost:5173, proxied to the API."
     }
   ],
-  "ports": [3000, 5173, 9222]
+  "ports": [
+    {
+      "name": "api",
+      "port": 3000
+    },
+    {
+      "name": "ui",
+      "port": 5173
+    },
+    {
+      "name": "chrome-cdp",
+      "port": 9222
+    }
+  ]
 }
