@@ -12,7 +12,7 @@
     <b>The open-source browser API for AI agents & apps.</b> <br />
     The best way to build live web agents and browser automation tools.
     <br /><br />
-    <em>Fork of <a href="https://github.com/steel-dev/steel-browser">steel-dev/steel-browser</a>, created in November 2025. See <a href="#about-this-fork">how this fork differs</a>.</em>
+    <em>Fork of <a href="https://github.com/steel-dev/steel-browser">steel-dev/steel-browser</a>, created on November 3, 2025. See <a href="#about-this-fork">how this fork differs</a>.</em>
 </p>
 
 <div align="center">
@@ -46,7 +46,7 @@
 
 ## About this fork
 
-This repository is a fork of [`steel-dev/steel-browser`](https://github.com/steel-dev/steel-browser), created in **November 2025**. The first fork-specific commit is dated **November 3, 2025**, and it is based on upstream `main` as of October 19, 2025 (`e9165bb`).
+This repository is a fork of [`steel-dev/steel-browser`](https://github.com/steel-dev/steel-browser). It was forked on **November 3, 2025** and is based on upstream `main` as of October 19, 2025 (`e9165bb`).
 
 It is maintained for Agent Studio / self-hosted deployments that sit behind an egress proxy. It is not Steel Cloud, and it is not kept in lockstep with upstream.
 
