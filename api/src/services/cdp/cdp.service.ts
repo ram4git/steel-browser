@@ -1220,6 +1220,12 @@ export class CDPService extends EventEmitter {
         path.join(defaultProfile, "Code Cache"),
         path.join(defaultProfile, "Cookies"),
         path.join(defaultProfile, "Cookies-journal"),
+        // Chrome >= 96 keeps the cookie DB under Default/Network/, not Default/,
+        // so the two entries above are no-ops on the Chrome stable the
+        // Dockerfile installs -- cookies survived every endSession() and the
+        // next session started already logged in.
+        path.join(defaultProfile, "Network", "Cookies"),
+        path.join(defaultProfile, "Network", "Cookies-journal"),
       ];
       await Promise.allSettled(
         toRemove.map((p) => fs.promises.rm(p, { recursive: true, force: true })),
