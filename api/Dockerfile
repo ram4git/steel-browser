@@ -84,7 +84,21 @@ RUN apt-get update && \
     procps \
     x11-xserver-utils
 
-# Install Google Chrome Stable (amd64 only)
+# Install Google Chrome (amd64 only), PINNED to an exact build.
+#
+# Why pinned: this image used to install `google-chrome-stable` from Google's
+# apt channel, i.e. whatever Chrome shipped on the day of the build. Every
+# release tag rebuilds this image, so the browser changed silently under the
+# backend. On 2026-09-15/18 that pulled 153.0.8010.52, in which the canvas
+# app's Ctrl+Shift+K copy no longer lands on the browser clipboard (reads
+# return 0 chars, no permission errors); 153.0.8010.36 from the 2026-09-16
+# build works. Confirmed by A/B on production with the same backend.
+#
+# The exact .deb is fetched from Google's versioned pool and the installed
+# version is asserted, so the build FAILS if the pin cannot be honoured
+# instead of drifting to latest. Bump CHROME_VERSION deliberately, with a
+# clipboard-workflow test, never as a side effect of a rebuild.
+ARG CHROME_VERSION=153.0.8010.36
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     wget \
@@ -92,12 +106,19 @@ RUN apt-get update && \
     curl \
     unzip \
     gnupg \
-    # Add Google Chrome repository
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    # Install Google Chrome Stable
-    && apt-get install -y google-chrome-stable \
+    && CHROME_DEB="google-chrome-stable_${CHROME_VERSION}-1_amd64.deb" \
+    && wget -q -O "/tmp/${CHROME_DEB}" "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_DEB}" \
+    # (same flags as the old `apt-get install -y google-chrome-stable`, so the
+    # dependency set does not change; only the source of the .deb does)
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y "/tmp/${CHROME_DEB}" \
+    && rm -f "/tmp/${CHROME_DEB}" \
+    # Google's postinst re-adds the "stable" apt source; remove it so nothing
+    # in this image can ever upgrade Chrome behind the pin.
+    && rm -f /etc/apt/sources.list.d/google-chrome.list /etc/cron.daily/google-chrome \
+    # Assert the pin actually took.
+    && INSTALLED="$(google-chrome --version | awk '{print $3}')" \
+    && echo "Chrome installed: ${INSTALLED} (pinned: ${CHROME_VERSION})" \
+    && [ "${INSTALLED}" = "${CHROME_VERSION}" ] \
     # Clean up
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
